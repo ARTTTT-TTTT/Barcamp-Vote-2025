@@ -3,17 +3,17 @@ import { useLoaderData, useNavigate } from "react-router-dom";
 import { Box, Container, Grid, Typography, createTheme, ThemeProvider } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
 
-import NavBar from "../components/Navbar";
-import Searchbar from "../components/Searchbar";
-import TopicCard from "../components/TopicCard";
-import Footer from "../components/Footer";
-import AlertBox from "../components/AlertBox.jsx";
-import api from "../api/api.js";
+import NavBar from "./components/Navbar";
+import Searchbar from "./components/Searchbar";
+import TopicCard from "./components/TopicCard";
+import Footer from "./components/Footer";
+import AlertBox from "./components/AlertBox.jsx";
+import api from "./api/api.js";
 
 
-import "../styles/scrollbar.css";
-import "../styles/sun.css";
-import "../styles/vote.css";
+import "./styles/scrollbar.css";
+import "./styles/sun.css";
+import "./styles/vote.css";
 
 const userContext = React.createContext();
 

@@ -1,4 +1,4 @@
-import config from "../../config";
+import config from "../services/config";
 
 const getConsole = async () => {
     try {
