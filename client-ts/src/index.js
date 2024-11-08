@@ -1,45 +1,43 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
-import App from "./App.jsx";
 import reportWebVitals from "./reportWebVitals";
-import getUser from "./api/getUser";
-import getConsole from "./api/getConsole";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-const check_session = (user) => {
-    if (user.message === "No session.") {
-        window.location.href = "/";
-    }
-};
+import App from "./App.jsx";
+import "./index.css";
+
+import getUser from "./api/user.js";
+import getConsole from "./api/console.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
-const router = createBrowserRouter(
-    [
-        {
-            path: "/vote/:id", // Dynamic route parameter
-            element: <App />,
-            loader: async ({ params }) => { // Change api to loader to use params
-                const user = await getUser();
-                const Console = await getConsole();
-                const { id } = params; // Access the id parameter
+const router = createBrowserRouter([
+    {
+        path: "/vote/:id",
+        element: <App />,
+        loader: async ({ params }) => {
+            const { id } = params;
 
-                const redirectResult = check_session(user);
-                if (redirectResult) {
-                    return redirectResult;
-                }
+            // Pass user ID to getUser
+            const user = await getUser(id);
+            const Console = await getConsole();
 
-                return { user, Console, id };
-            },
+            // Check user session and Console.vote status
+            if (user.message === "No session.") {
+                return (window.location.href = "/register");
+            }
+            if (Console.vote !== true && user.status !== "CONFIRMED") {
+                return (window.location.href = "/register/profile");
+            }
+
+            return { user, Console, id };
         },
-    ]
-);
+    },
+]);
 
 root.render(
     <React.StrictMode>
         <RouterProvider router={router} />
-        
     </React.StrictMode>
 );
 
