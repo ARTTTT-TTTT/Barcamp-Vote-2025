@@ -10,6 +10,7 @@ import Footer from "../components/Footer";
 import AlertBox from "../components/AlertBox.jsx";
 import api from "../api/api.js";
 
+
 import "../styles/scrollbar.css";
 import "../styles/sun.css";
 import "../styles/vote.css";
@@ -24,6 +25,7 @@ function VotePage() {
     const [centent, setContent] = useState("");
     const { user, Console } = useLoaderData();
     const navigate = useNavigate();
+
 
     let user_id = user.user._id;
 

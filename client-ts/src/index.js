@@ -1,14 +1,45 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import App from "./App";
+import App from "./App.jsx";
 import reportWebVitals from "./reportWebVitals";
+import getUser from "./api/getUser";
+import getConsole from "./api/getConsole";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+const check_session = (user) => {
+    if (user.message === "No session.") {
+        window.location.href = "/";
+    }
+};
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
+const router = createBrowserRouter(
+    [
+        {
+            path: "/vote/:id", // Dynamic route parameter
+            element: <App />,
+            loader: async ({ params }) => { // Change api to loader to use params
+                const user = await getUser();
+                const Console = await getConsole();
+                const { id } = params; // Access the id parameter
+
+                const redirectResult = check_session(user);
+                if (redirectResult) {
+                    return redirectResult;
+                }
+
+                return { user, Console, id };
+            },
+        },
+    ]
+);
+
 root.render(
     <React.StrictMode>
-        <App />
+        <RouterProvider router={router} />
+        
     </React.StrictMode>
 );
 
