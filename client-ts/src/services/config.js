@@ -1,9 +1,9 @@
-const isProd = !(!process.env.NODE_ENV || process.env.NODE_ENV === 'development')
+const isProd = import.meta.env.VITE_NODE_ENV === "production";
 
 const config = {
     isProd,
-    apiUrlPrefix: isProd ? '/api' : 'http://localhost:8080/api',
-    key : isProd ? process.env.REACT_APP_KEY : 'barcamp007'
-}
+    apiPrefix: isProd ? "/api" : import.meta.env.VITE_API_PREFIX,
+    key: isProd ? import.meta.env.VITE_APP_KEY : "barcamp007",
+};
 
-export default config
+export default config;
