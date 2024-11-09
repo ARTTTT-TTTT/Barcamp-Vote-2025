@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useLoaderData, useNavigate } from "react-router-dom";
 import { Box, Container, Grid, Typography, createTheme, ThemeProvider } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -10,24 +9,19 @@ import Footer from "./components/Footer";
 import AlertBox from "./components/AlertBox.jsx";
 import api from "./api/api.js";
 
-
 import "./styles/scrollbar.css";
 import "./styles/sun.css";
 import "./styles/vote.css";
 
 const userContext = React.createContext();
 
-function VotePage() {
+function App() {
     const [searchTerm, setSearchTerm] = useState("");
     const [point, setPoint] = useState(null);
     const [data, setData] = useState([]);
     const [alert, setAlert] = useState(false);
     const [centent, setContent] = useState("");
-    const { user, Console } = useLoaderData();
-    const navigate = useNavigate();
-
-
-    let user_id = user.user._id;
+    const [user, setUser] = useState("abc");
 
     const themeLight = createTheme({
         palette: {
@@ -44,16 +38,14 @@ function VotePage() {
         },
     });
 
-    useEffect(() => {
-        if (Console.vote !== true || !user_id || user.user.status !== "CONFIRMED") {
-            navigate("/profile");
-        }
-    }, [navigate, user_id, Console.vote, user.user.status]);
-
     //Fetch
     useEffect(() => {
-        if (user_id) {
+        let user_id = "?uid=testUser123"; //pass the user_id to this parameter
+
+        if (!!user_id) {
+            setUser(user_id);
             api.get(`/topics/?user=${user_id}`).then((res) => {
+                //console.log(res)
                 if (res.data.Istime) {
                     let me_vote = res.data.topics_to_send.filter((e) => e.status);
                     let not_vote = res.data.topics_to_send.filter((e) => !e.status).sort(() => 0.5 - Math.random());
@@ -66,7 +58,7 @@ function VotePage() {
                 }
             });
         }
-    }, [user_id]);
+    }, [user]);
 
     const search_filter = (val) => {
         if (searchTerm === "") {
@@ -97,9 +89,9 @@ function VotePage() {
     };
 
     return (
-        <userContext.Provider value={user_id}>
-            <ThemeProvider theme={themeLight}>
-                <section className="vote-page">
+        <section className="vote-page">
+            <userContext.Provider value={user}>
+                <ThemeProvider theme={themeLight}>
                     <NavBar used_point={point} />
                     <Box
                         sx={{
@@ -164,11 +156,11 @@ function VotePage() {
                         </Container>
                         <Footer />
                     </Box>
-                </section>
-            </ThemeProvider>
-        </userContext.Provider>
+                </ThemeProvider>
+            </userContext.Provider>
+        </section>
     );
 }
 
 export { userContext };
-export default VotePage;
+export default App;
