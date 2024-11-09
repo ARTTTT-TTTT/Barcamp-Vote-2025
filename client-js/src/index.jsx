@@ -1,4 +1,5 @@
 import React from "react";
+import CryptoJS from "crypto-js";
 import ReactDOM from "react-dom/client";
 import reportWebVitals from "./reportWebVitals.js";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -9,6 +10,8 @@ import "./index.css";
 import getUser from "./api/user.js";
 import getConsole from "./api/console.js";
 import config from "./services/config";
+
+const secretKey = config.secretKey;
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -25,20 +28,28 @@ const router = createBrowserRouter(
             path: "/:id",
             element: <App />,
             loader: async ({ params }) => {
-                const { id } = params;
+                let { id } = params;
 
                 try {
+                    const bytes = CryptoJS.AES.decrypt(id, secretKey);
+                    const decryptedId = bytes.toString(CryptoJS.enc.Utf8);
+
+                    if (!decryptedId) {
+                        window.location.href = `${config.registerDomain}`;
+                        return null;
+                    }
+                    
                     const Console = await getConsole();
-                    const user = await getUser(id);
+                    const user = await getUser(decryptedId);
 
                     if (Console.vote !== true || user.status !== "CONFIRMED") {
                         window.location.href = `${config.registerDomain}`;
                         return null;
                     }
 
-                    return { id, Console };
+                    return { id: decryptedId, Console };
                 } catch (error) {
-                    console.error("Error fetching user data:", error);
+                    console.error("Error fetching or decrypting user data:", error);
                     window.location.href = `${config.registerDomain}`;
                     return null;
                 }
