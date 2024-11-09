@@ -9,9 +9,7 @@ import "./index.css";
 
 import getUser from "./api/user.js";
 import getConsole from "./api/console.js";
-import config from "./services/config";
-
-const secretKey = config.secretKey;
+import config from "./services/config.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -31,26 +29,28 @@ const router = createBrowserRouter(
                 let { id } = params;
 
                 try {
-                    const bytes = CryptoJS.AES.decrypt(id, secretKey);
+                    const bytes = CryptoJS.AES.decrypt(id, config.secretKey);
                     const decryptedId = bytes.toString(CryptoJS.enc.Utf8);
 
                     if (!decryptedId) {
-                        window.location.href = `${config.registerDomain}`;
+                        console.error("Decryption failed: Invalid ID.");
+                        window.location.href = `${config.registerDomain}/profile`;
                         return null;
                     }
-                    
+
                     const Console = await getConsole();
                     const user = await getUser(decryptedId);
 
                     if (Console.vote !== true || user.status !== "CONFIRMED") {
-                        window.location.href = `${config.registerDomain}`;
+                        console.error("User is not eligible for voting.");
+                        window.location.href = `${config.registerDomain}/profile`;
                         return null;
                     }
 
                     return { id: decryptedId, Console };
                 } catch (error) {
                     console.error("Error fetching or decrypting user data:", error);
-                    window.location.href = `${config.registerDomain}`;
+                    window.location.href = `${config.registerDomain}/profile`;
                     return null;
                 }
             },
