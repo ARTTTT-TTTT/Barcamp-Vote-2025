@@ -49,9 +49,11 @@ function Footer() {
                 <img width={matches ? "80" : "120"} src="/images/pupa_logo_blue_with_bg.png" alt="BarcampLogo" />
             </Grid>
             <Grid item xl={4} xs={6} sx={{ textAlign: "center", zIndex: "10" }}>
-                <img width={matches ? "80" : "120"} src="/images/DragonBARCAMPblack8sxl-removebg-preview_w_bg.png" alt="BarcampLogo" />
+                <img width={matches ? "80" : "120"} src="/images/barcamp9_with_bg.png" alt="BarcampLogo" />
             </Grid>
+            
         </Grid>
+        
     );
 }
 

@@ -9,7 +9,7 @@ export default function NavBar({ used_point }) {
                     <Button href="/">
                         <img
                             style={{ height: 50 }}
-                            src="/images/BARCAMP8xl-removebg-preview.png"
+                            src="/images/barcamp9rm_bg.png"
                             alt="BarcampLogo"
                             href="/"
                             sx={{ display: { xs: "none", md: "flex" } }}
